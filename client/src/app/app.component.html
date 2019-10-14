@@ -15,6 +15,11 @@
         </li>
       </ul>
     </section>
+    <form *ngIf="currentRoom.isPrivate" (ngSubmit)="addUserToRoom()">
+      <label for="user-name">Add user to {{ currentRoom.name }}</label>
+      <input type="text" class="newUser-input" [(ngModel)]="newUser" name="user-name" id="user-name"
+        placeholder="Enter username">
+    </form>
   </aside>
 
   <main class="chat-window">
@@ -41,5 +46,49 @@
     </footer>
   </main>
 
-  <aside class="sidebar right-sidebar"></aside>
+  <aside class="sidebar right-sidebar">
+    <section class="room-section">
+      <section *ngIf="currentUser.id" class="user-rooms">
+        <h4>Rooms</h4>
+        <ul class="room-list">
+          <li *ngFor="let room of userRooms">
+            <div [class.active]="room.id==currentRoom.id" (click)="connectToRoom(room.id)" class="room">
+              <span class="room-status" *ngIf="room.isPrivate; else publicRoom">🔒</span>
+              <ng-template #publicRoom>
+                <span>🌐</span>
+              </ng-template>
+              <span class="room-name">{{ room.name }}</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+      <section *ngIf="joinableRooms.length > 0" class="joinable-rooms">
+        <h4>Joinable rooms</h4>
+        <ul class="room-list">
+          <li *ngFor="let room of joinableRooms">
+            <div class="room" (click)="joinRoom(room.id)">
+              <span class="room-status" *ngIf="room.isPrivate; else publicRoom">🔒</span>
+              <ng-template #publicRoom>
+                <span>🌐</span>
+              </ng-template>
+              <span class="room-name">{{ room.name }}</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </section>
+    <section *ngIf="currentUser.id" class="create-room">
+      <form (ngSubmit)="createRoom()">
+        <input type="text" [(ngModel)]="newRoom.name" name="room-name" id="room-name" placeholder="Create a room">
+        <label for="is-private">
+          <input type="checkbox" [(ngModel)]="newRoom.isPrivate" name="is-private" id="is-private">
+          <span>Is this room private?</span>
+        </label>
+      </form>
+    </section>
+  </aside>
+
+
+
+
 </div>
